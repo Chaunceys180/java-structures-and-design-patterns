@@ -12,7 +12,7 @@ public class MyArrayList<E> implements List<E>, Comparable<E>, Iterable<E>{
     private int size;
     private E[] structure;
 
-    private static final int INITIAL_SIZE = 100;
+    private static final int INITIAL_SIZE = 20;
     private static final double RESIZE_RATE = 0.75;
 
     public MyArrayList() {
@@ -34,8 +34,10 @@ public class MyArrayList<E> implements List<E>, Comparable<E>, Iterable<E>{
         E element = castElement(object);
 
         for (E item : structure) {
-            if (item.equals(element)) {
-                return true;
+            if(item != null) {
+                if (item.equals(element)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -69,12 +71,16 @@ public class MyArrayList<E> implements List<E>, Comparable<E>, Iterable<E>{
     }
 
     private boolean needsResize() {
-        return (size / structure.length) >= RESIZE_RATE;
+        if(size == 0) {
+            return true;
+        } else {
+            return (size / structure.length) >= RESIZE_RATE;
+        }
     }
 
     private void resize() {
         //create temp
-        E[] temp = (E[]) new Object[structure.length * 2];
+        E[] temp = (E[]) new Object[(structure.length + 1) * 2];
 
         //copy over all elements to the temp, and reassign
         System.arraycopy(structure, 0, temp, 0, structure.length);
@@ -82,7 +88,19 @@ public class MyArrayList<E> implements List<E>, Comparable<E>, Iterable<E>{
         structure = temp;
     }
 
-    private void condense() {
+    public void ensureCapacity(int minCapacity) {
+        //create temp
+        E[] temp = (E[]) new Object[minCapacity];
+
+        //copy over all elements to the temp, and reassign
+        System.arraycopy(structure, 0, temp, 0, structure.length);
+
+        structure = temp;
+    }
+
+    public void trimToSize() {
+        //this function gets rid of all t
+        // he null values in the structure
         //create temp
         E[] temp = (E[]) new Object[size];
 
@@ -116,39 +134,112 @@ public class MyArrayList<E> implements List<E>, Comparable<E>, Iterable<E>{
                     size--;
                 }
             }
-            condense();
+            trimToSize();
             return true;
         }
     }
 
     @Override
     public boolean addAll(Collection collection) {
-        return false;
+        //save size before
+        int initSize = size;
+
+        for(Object item : collection) {
+            add(item);
+        }
+
+        //then items added successfully
+        return initSize < size;
     }
 
     @Override
     public boolean addAll(int index, Collection collection) {
-        return false;
+        if(index < 0 || index > size()) {
+            throw new IndexOutOfBoundsException("Index is out of range");
+        }
+
+        if(collection == null) {
+            throw new NullPointerException("the specified collection is null");
+        }
+
+        if(index > size) {
+            index = size;
+        }
+
+        //make sure structure has the index
+        if(structure.length < size + collection.size()) {
+            ensureCapacity(structure.length + collection.size());
+        }
+
+        //then merge them starting with the collection at the desired index
+        E[] temp = (E[]) new Object[structure.length];
+        for(Object item : collection) {
+            temp[index] = (E) item;
+            index++;
+        }
+
+        //then add in the rest from structure
+        int counter = 0;
+        for (E item : structure) {
+            if (item != null) { //then add item while i can find a spot
+                if(temp[counter] != null) {
+                    counter = index;
+                }
+                temp[counter] = item;
+                counter++;
+            }
+        }
+
+        //reset structure
+        structure = temp;
+        size+= collection.size();
+        return true;
     }
 
     @Override
     public void clear() {
-
+        structure = (E[]) new Object[INITIAL_SIZE];
+        size = 0;
     }
 
     @Override
     public E get(int index) {
-        return null;
+        if(index < 0) {
+            throw new IndexOutOfBoundsException("Index cannot be negative");
+        } else if(index >= size) {
+            throw new IndexOutOfBoundsException("Index is greater than the size of the ArrayList");
+        }
+        return structure[index];
     }
 
     @Override
     public E set(int index, E element) {
-        return null;
+        if(index < 0) {
+            throw new IndexOutOfBoundsException("Index cannot be negative");
+        } else if(index >= size) {
+            throw new IndexOutOfBoundsException("Index is greater than the size of the ArrayList");
+        }
+
+        E prevItem = structure[index];
+        structure[index] = element;
+        return prevItem;
     }
 
     @Override
     public void add(int index, E element) {
+        if(index < 0) {
+            throw new IndexOutOfBoundsException("Index cannot be negative");
+        } else if(index >= size) {
+            throw new IndexOutOfBoundsException("Index is greater than the size of the ArrayList");
+        }
 
+        if(structure[index] == null) {
+            structure[index] = element;
+        } else {
+            Collection<E> collection = new LinkedList<>();
+            collection.add(element);
+            addAll(index, collection);
+        }
     }
 
     @Override
@@ -212,7 +303,13 @@ public class MyArrayList<E> implements List<E>, Comparable<E>, Iterable<E>{
 
     private E[] getNoNullCopy() {
         E[] array = (E[]) new Object[size];
-        System.arraycopy(structure, 0, array, 0, size);
+        int counter = 0;
+        for(int i = 0; i < structure.length; i++) {
+            if(structure[i] != null) {
+                array[counter] = structure[i];
+                counter++;
+            }
+        }
         return array;
     }
 
