@@ -3,9 +3,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import structures.array_lists.MyArrayList;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.ColorModel;
+import java.util.*;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -440,7 +442,46 @@ public class ArrayListTests {
 
     @Test
     public void testRetainAll() {
-        fail();
+        addElements();
+
+        Collection<Paint> badCollection = new ArrayList<>();
+
+        //test for exceptions
+        try {
+            myList.retainAll(null);
+            fail("exception not thrown will null collection");
+        } catch (NullPointerException exception) {
+            //good
+        }
+
+        try {
+            Paint color = new Color(222,222,222);
+            badCollection.add(color);
+            myList.retainAll(badCollection);
+            fail("exception not thrown with different type collections being retained");
+        } catch (ClassCastException exception) {
+            //good
+        }
+
+        Collection<Integer> goodCollection = new ArrayList<>();
+
+        for(int i = 5; i <= 10; i++) {
+            goodCollection.add(i);
+        }
+
+        myList.retainAll(goodCollection);
+
+        //verify that size is correct
+        assertEquals(6, myList.size(), "size is incorrect after retaining all from a collection");
+
+        for(int i = 5; i <= 10; i++) {
+            assertTrue(myList.contains(i), "Items that were meant to be retained are missing");
+        }
+
+        for(int i = 11; i <= 19; i++) {
+            assertFalse(myList.contains(i), "Items that were meant to be dismissed are still in the list");
+        }
+
     }
 
     @Test

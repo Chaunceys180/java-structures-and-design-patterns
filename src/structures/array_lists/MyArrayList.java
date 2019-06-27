@@ -1,22 +1,25 @@
 package structures.array_lists;
 
+import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.*;
 
 /**
- * @param <E> is the generic element to be stored
+ * @param <T> is the generic element to be stored
  * @author Chauncey Brown-Castro
  * @version 1.0
  */
-public class MyArrayList<E> implements List<E> {
+public class MyArrayList<T> implements List<T> {
 
     private int size;
-    private E[] structure;
+    private T[] structure;
 
     private static final int INITIAL_SIZE = 20;
     private static final double RESIZE_RATE = 0.75;
 
     public MyArrayList() {
-        structure = (E[]) new Object[INITIAL_SIZE];
+        structure = (T[]) new Object[INITIAL_SIZE];
     }
 
     @Override
@@ -31,9 +34,9 @@ public class MyArrayList<E> implements List<E> {
 
     @Override
     public boolean contains(Object object) {
-        E element = castElement(object);
+        T element = castElement(object);
 
-        for (E item : structure) {
+        for (T item : structure) {
             if(item != null) {
                 if (item.equals(element)) {
                     return true;
@@ -44,12 +47,12 @@ public class MyArrayList<E> implements List<E> {
     }
 
     @Override
-    public Iterator<E> iterator() {
+    public Iterator<T> iterator() {
         return null;
     }
 
     @Override
-    public E[] toArray() {
+    public T[] toArray() {
         return getNoNullCopy();
     }
 
@@ -80,7 +83,7 @@ public class MyArrayList<E> implements List<E> {
 
     private void resize() {
         //create temp
-        E[] temp = (E[]) new Object[(structure.length + 1) * 2];
+        T[] temp = (T[]) new Object[(structure.length + 1) * 2];
 
         //copy over all elements to the temp, and reassign
         System.arraycopy(structure, 0, temp, 0, structure.length);
@@ -90,7 +93,7 @@ public class MyArrayList<E> implements List<E> {
 
     private void ensureCapacity(int minCapacity) {
         //create temp
-        E[] temp = (E[]) new Object[minCapacity];
+        T[] temp = (T[]) new Object[minCapacity];
 
         //copy over all elements to the temp, and reassign
         System.arraycopy(structure, 0, temp, 0, structure.length);
@@ -102,11 +105,11 @@ public class MyArrayList<E> implements List<E> {
         //this function gets rid of all t
         // he null values in the structure
         //create temp
-        E[] temp = (E[]) new Object[size];
+        T[] temp = (T[]) new Object[size];
 
         //copy over all elements to the temp, and reassign
         int counter = 0;
-        for(E item : structure) {
+        for(T item : structure) {
             if(item != null) {
                 temp[counter] = item;
                 counter++;
@@ -172,15 +175,15 @@ public class MyArrayList<E> implements List<E> {
         }
 
         //then merge them starting with the collection at the desired index
-        E[] temp = (E[]) new Object[structure.length];
+        T[] temp = (T[]) new Object[structure.length];
         for(Object item : collection) {
-            temp[index] = (E) item;
+            temp[index] = (T) item;
             index++;
         }
 
         //then add in the rest from structure
         int counter = 0;
-        for (E item : structure) {
+        for (T item : structure) {
             if (item != null) { //then add item while i can find a spot
                 if(temp[counter] != null) {
                     counter = index;
@@ -198,12 +201,12 @@ public class MyArrayList<E> implements List<E> {
 
     @Override
     public void clear() {
-        structure = (E[]) new Object[INITIAL_SIZE];
+        structure = (T[]) new Object[INITIAL_SIZE];
         size = 0;
     }
 
     @Override
-    public E get(int index) {
+    public T get(int index) {
         if(index < 0) {
             throw new IndexOutOfBoundsException("Index cannot be negative");
         } else if(index >= size) {
@@ -213,20 +216,20 @@ public class MyArrayList<E> implements List<E> {
     }
 
     @Override
-    public E set(int index, E element) {
+    public T set(int index, T element) {
         if(index < 0) {
             throw new IndexOutOfBoundsException("Index cannot be negative");
         } else if(index >= size) {
             throw new IndexOutOfBoundsException("Index is greater than the size of the ArrayList");
         }
 
-        E prevItem = structure[index];
+        T prevItem = structure[index];
         structure[index] = element;
         return prevItem;
     }
 
     @Override
-    public void add(int index, E element) {
+    public void add(int index, T element) {
         if(index < 0) {
             throw new IndexOutOfBoundsException("Index cannot be negative");
         } else if(index >= size) {
@@ -236,18 +239,18 @@ public class MyArrayList<E> implements List<E> {
         if(structure[index] == null) {
             structure[index] = element;
         } else {
-            Collection<E> collection = new LinkedList<>();
+            Collection<T> collection = new LinkedList<>();
             collection.add(element);
             addAll(index, collection);
         }
     }
 
     @Override
-    public E remove(int index) {
+    public T remove(int index) {
         if(index < 0 || index >= size()) {
             throw new IndexOutOfBoundsException("index out of bounds: " + index);
         }
-        E item = structure[index];
+        T item = structure[index];
         structure[index] = null;
         size--;
         trimToSize();
@@ -283,17 +286,17 @@ public class MyArrayList<E> implements List<E> {
     }
 
     @Override
-    public ListIterator<E> listIterator() {
+    public ListIterator<T> listIterator() {
         return null;
     }
 
     @Override
-    public ListIterator<E> listIterator(int index) {
+    public ListIterator<T> listIterator(int index) {
         return null;
     }
 
     @Override
-    public List<E> subList(int fromIndex, int toIndex) {
+    public List<T> subList(int fromIndex, int toIndex) {
 
         if(fromIndex < 0 || toIndex > size) {
             throw new IndexOutOfBoundsException("an endpoint index value is out of range");
@@ -301,7 +304,7 @@ public class MyArrayList<E> implements List<E> {
             throw new IllegalArgumentException("the endpoint indices are out of order");
         }
 
-        List<E> temp = new MyArrayList<>();
+        List<T> temp = new MyArrayList<>();
 
         while(fromIndex <= toIndex) {
             temp.add(structure[fromIndex]);
@@ -313,7 +316,36 @@ public class MyArrayList<E> implements List<E> {
 
     @Override
     public boolean retainAll(Collection collection) {
-        return false;
+        if(collection == null || collection.contains(null)) {
+            throw new NullPointerException("collection contains a null element or is null");
+        }
+
+        String myGenericType = structure[0].getClass().getTypeName();
+        String otherGenericType = collection.iterator().next().getClass().getTypeName();
+
+        if(!myGenericType.equals(otherGenericType)) {
+            throw new ClassCastException("Incompatible classes. Current type: " + myGenericType +
+                ", Incompatible collection of: " + otherGenericType);
+        }
+
+        //record size for comparison.
+        int preSize = size();
+
+        //if the structure contains the item, save it. if the structure doesnt have the item, dont add it.
+        T[] temp = (T[]) new Object[collection.size()];
+
+        //reset size
+        size = 0;
+        for(Object item : collection) {
+            if(contains(item)) {
+               temp[size] = (T) item;
+               size++;
+            }
+        }
+        //reassign
+        structure = temp;
+
+        return preSize != size;
     }
 
     @Override
@@ -327,16 +359,16 @@ public class MyArrayList<E> implements List<E> {
     }
 
     @Override
-    public E[] toArray(Object[] array) {
-        return (E[]) new Object[0];
+    public T[] toArray(Object[] array) {
+        return (T[]) new Object[0];
     }
 
-    private E castElement(Object object) {
-        return (E) object;
+    private T castElement(Object object) {
+        return (T) object;
     }
 
-    private E[] getNoNullCopy() {
-        E[] array = (E[]) new Object[size];
+    private T[] getNoNullCopy() {
+        T[] array = (T[]) new Object[size];
         int counter = 0;
         for(int i = 0; i < structure.length; i++) {
             if(structure[i] != null) {
