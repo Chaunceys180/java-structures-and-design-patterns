@@ -7,7 +7,7 @@ import java.util.*;
  * @author Chauncey Brown-Castro
  * @version 1.0
  */
-public class MyArrayList<E> implements List<E>, Comparable<E>, Iterable<E>{
+public class MyArrayList<E> implements List<E> {
 
     private int size;
     private E[] structure;
@@ -88,7 +88,7 @@ public class MyArrayList<E> implements List<E>, Comparable<E>, Iterable<E>{
         structure = temp;
     }
 
-    public void ensureCapacity(int minCapacity) {
+    private void ensureCapacity(int minCapacity) {
         //create temp
         E[] temp = (E[]) new Object[minCapacity];
 
@@ -98,7 +98,7 @@ public class MyArrayList<E> implements List<E>, Comparable<E>, Iterable<E>{
         structure = temp;
     }
 
-    public void trimToSize() {
+    private void trimToSize() {
         //this function gets rid of all t
         // he null values in the structure
         //create temp
@@ -244,17 +244,42 @@ public class MyArrayList<E> implements List<E>, Comparable<E>, Iterable<E>{
 
     @Override
     public E remove(int index) {
-        return null;
+        if(index < 0 || index >= size()) {
+            throw new IndexOutOfBoundsException("index out of bounds: " + index);
+        }
+        E item = structure[index];
+        structure[index] = null;
+        size--;
+        trimToSize();
+        return item;
     }
 
     @Override
     public int indexOf(Object object) {
-        return 0;
+        if(object == null || size == 0) {
+            return -1;
+        }
+
+        for(int i = 0; i < size; i++) {
+            if(structure[i].equals(object)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
     public int lastIndexOf(Object object) {
-        return 0;
+        if(object == null || size == 0) {
+            return -1;
+        }
+
+        for(int i = size-1; i >= 0; i--) {
+            if(structure[i].equals(object)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -269,7 +294,21 @@ public class MyArrayList<E> implements List<E>, Comparable<E>, Iterable<E>{
 
     @Override
     public List<E> subList(int fromIndex, int toIndex) {
-        return new MyArrayList<E>();
+
+        if(fromIndex < 0 || toIndex > size) {
+            throw new IndexOutOfBoundsException("an endpoint index value is out of range");
+        } else if(fromIndex > toIndex) {
+            throw new IllegalArgumentException("the endpoint indices are out of order");
+        }
+
+        List<E> temp = new MyArrayList<>();
+
+        while(fromIndex <= toIndex) {
+            temp.add(structure[fromIndex]);
+            fromIndex++;
+        }
+
+        return temp;
     }
 
     @Override
@@ -290,11 +329,6 @@ public class MyArrayList<E> implements List<E>, Comparable<E>, Iterable<E>{
     @Override
     public E[] toArray(Object[] array) {
         return (E[]) new Object[0];
-    }
-
-    @Override
-    public int compareTo(Object collection) {
-        return 0;
     }
 
     private E castElement(Object object) {

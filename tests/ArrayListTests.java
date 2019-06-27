@@ -56,7 +56,19 @@ public class ArrayListTests {
 
     @Test
     public void testContains() {
-        fail();
+
+        addElements();
+
+        //make sure they're in there
+        for(int i = 1; i <= 19; i++) {
+            assertTrue(myList.contains((Integer) i));
+        }
+
+        //make sure elements not in there aren't found
+        for(int i = 20; i <= 30; i++) {
+            assertFalse(myList.contains((Integer) i));
+        }
+
     }
 
     @Test
@@ -181,8 +193,6 @@ public class ArrayListTests {
         System.out.println(myList.toString());
     }
 
-
-
     @Test
     public void testClear() {
 
@@ -220,27 +230,168 @@ public class ArrayListTests {
 
     @Test
     public void testSet() {
-        fail();
+
+        addElements();
+
+        try {
+            myList.set(-5, 8);
+            fail("Index out of bounds exception not thrown when given a negative index to set()");
+        } catch (IndexOutOfBoundsException exception) {
+            //good
+        }
+
+        try {
+            myList.set(50, 9);
+            fail("Index out of bounds exception not thrown when given a index greater than the structure length");
+        } catch (IndexOutOfBoundsException exception) {
+            //good
+        }
+
+        //make sure appropriate element is returned
+        assertEquals(1, myList.set(0, 50), "set element 1 at index 0 to 50, element 1 was not returned");
+
+        //make sure that element gets replaced
+        assertTrue(myList.contains(50), "list did not contain 50 after setting 1 to 50");
+
+        //make sure that 1 is no longer in there
+        assertFalse(myList.contains(1), "set 1 to 50 but element 1 was still found");
+
+
     }
 
     @Test
     public void testAddWithIndex() {
-        fail();
+
+        addElements();
+
+        try {
+            myList.set(-5, 8);
+            fail("Index out of bounds exception not thrown when given a negative index to set()");
+        } catch (IndexOutOfBoundsException exception) {
+            //good
+        }
+
+        try {
+            myList.set(50, 9);
+            fail("Index out of bounds exception not thrown when given a index greater than the structure length");
+        } catch (IndexOutOfBoundsException exception) {
+            //good
+        }
+
+        //add in element 20 at index 3
+        myList.add(3, 20);
+
+        //make sure list still contains all old values
+        for(int i = 1; i <= 19; i++) {
+            assertTrue(myList.contains(i), "old element lost while adding with index");
+        }
+
+        //make sure new element is in there
+        assertTrue(myList.contains(20), "element 20 added but not found");
+
+        //make sure it's at the appropriate index
+        assertEquals(myList.get(3), 20, "element added was not at the appropriate index");
+
+        //make sure size is correct after adding
+        assertEquals(20, myList.size(), "size is not correct after adding new element by index");
     }
 
     @Test
     public void testRemoveWithIndex() {
-        fail();
+        addElements();
+
+        //make sure exception is thrown if invalid index
+        try {
+            myList.remove(-5);
+            fail("Index out of bounds exception not thrown when given a negative index in remove(int index)");
+        } catch (IndexOutOfBoundsException exception) {
+            //good
+        }
+
+        //make sure exception is thrown if invalid index
+        try {
+            myList.remove(myList.size());
+            fail("Index out of bounds exception not thrown when given a index too large");
+        } catch (IndexOutOfBoundsException exception) {
+            //good
+        }
+
+        System.out.println(myList.toString());
+
+
+        //make sure element is returned when removed
+        //i know element 1 is at index 0, so remove it
+        assertEquals(myList.remove(0), 1, "removed element 1 at index 0, but element 1 wasn't returned");
+
+        assertFalse(myList.contains((Integer) 1), "element still contains element 1 after removing");
+
+        assertEquals(18, myList.size(), "size not correct after removal");
+
+        System.out.println(myList.toString());
+
+
     }
 
     @Test
     public void testIndexOf() {
-        fail();
+        addElements();
+
+        //make sure the index's of everything match
+
+        for(int i = 1; i <= 19; i++) {
+            assertEquals(i-1, myList.indexOf((Integer) i), "Index returned does not match the element");
+        }
+
+        //make sure -1 gets returned if it doesn't work
+        assertEquals(-1, myList.indexOf(null), "expected -1 from searching for a null value");
+
+        assertEquals(-1, myList.indexOf(90), "expected -1 from an object that isn't in the list");
+
+        myList.remove(0);
+        assertEquals(-1, myList.indexOf((Integer) 1), "expected -1, because 1 was removed and doesn't have an index");
+
+        myList.remove((Integer) 2);
+        assertEquals(-1, myList.indexOf((Integer) 2), "removed element two by index and was still found afterwards");
+
+        myList.add(76);
+        assertEquals(myList.size()-1, myList.indexOf(76), "added element 76 but it was not found at the last index");
+
+        myList.add(3, 23);
+        assertEquals(3, myList.indexOf(23), "added 23 to index 3, index 3 was not returned when looking for 23");
+
+        myList.clear();
+        assertEquals(-1, myList.indexOf(3), "expected -1 when looking for an index on an empty list");
     }
 
     @Test
     public void testLastIndexOf() {
-        fail();
+        addElements();
+
+        //make sure the index's of everything match
+
+        for(int i = 19; i >= 1; i--) {
+            assertEquals(i-1, myList.indexOf((Integer) i), "Index returned does not match the element");
+        }
+
+        //make sure -1 gets returned if it doesn't work
+        assertEquals(-1, myList.indexOf(null), "expected -1 from searching for a null value");
+
+        assertEquals(-1, myList.indexOf(90), "expected -1 from an object that isn't in the list");
+
+        myList.remove(0);
+        assertEquals(-1, myList.indexOf((Integer) 1), "expected -1, because 1 was removed and doesn't have an index");
+
+        myList.remove((Integer) 2);
+        assertEquals(-1, myList.indexOf((Integer) 2), "removed element two by index and was still found afterwards");
+
+        myList.add(76);
+        assertEquals(myList.size()-1, myList.indexOf(76), "added element 76 but it was not found at the last index");
+
+        myList.add(3, 23);
+        assertEquals(3, myList.indexOf(23), "added 23 to index 3, index 3 was not returned when looking for 23");
+
+        myList.clear();
+        assertEquals(-1, myList.indexOf(3), "expected -1 when looking for an index on an empty list");
     }
 
     @Test
@@ -255,7 +406,36 @@ public class ArrayListTests {
 
     @Test
     public void testSubList() {
-        fail();
+        addElements();
+        List<Integer> subList;
+        //there's 20 elements in the list now
+
+        //make sure proper exceptions are thrown
+        try {
+            subList = myList.subList(50, 8);
+            fail();
+        } catch (IllegalArgumentException exception) {
+            //good
+        }
+
+        try {
+            subList = myList.subList(-3, 21);
+            fail();
+        } catch (IndexOutOfBoundsException exception) {
+            //good
+        }
+
+        //get a sub list from 5-10
+        subList = myList.subList(5, 10);
+
+        //verify size is 6.  [6,7,8,9,10,11]
+        int counter = 6;
+        for (int i = 0; i < subList.size(); i++) {
+            assertEquals(counter, subList.get(i), "item did not match what was expected in the sublist.");
+            counter++;
+        }
+
+
     }
 
     @Test
@@ -273,7 +453,6 @@ public class ArrayListTests {
         fail();
     }
 
-
     @Test
     public void testToArray() {
         addElements();
@@ -283,16 +462,6 @@ public class ArrayListTests {
         Assertions.assertEquals(19, array.length, "added in 20 elements, but the array " +
                 "returned didn't have all of them");
         System.out.println(Arrays.toString(array));
-    }
-
-    @Test
-    public void testCompareTo() {
-        fail();
-    }
-
-    @Test
-    public void test() {
-        fail();
     }
 
     private void addElements() {
