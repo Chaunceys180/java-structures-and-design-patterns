@@ -1,11 +1,9 @@
 package structures.array_lists;
 
-import java.lang.reflect.Parameter;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.*;
 
 /**
+ * This class is a custom ArrayList data structure that i'm making as proof of comprehension.
  * @param <T> is the generic element to be stored
  * @author Chauncey Brown-Castro
  * @version 1.0
@@ -18,6 +16,9 @@ public class MyArrayList<T> implements List<T> {
     private static final int INITIAL_SIZE = 20;
     private static final double RESIZE_RATE = 0.75;
 
+    /**
+     * MyArrayList Constructor
+     */
     public MyArrayList() {
         structure = (T[]) new Object[INITIAL_SIZE];
     }
@@ -316,17 +317,7 @@ public class MyArrayList<T> implements List<T> {
 
     @Override
     public boolean retainAll(Collection collection) {
-        if(collection == null || collection.contains(null)) {
-            throw new NullPointerException("collection contains a null element or is null");
-        }
-
-        String myGenericType = structure[0].getClass().getTypeName();
-        String otherGenericType = collection.iterator().next().getClass().getTypeName();
-
-        if(!myGenericType.equals(otherGenericType)) {
-            throw new ClassCastException("Incompatible classes. Current type: " + myGenericType +
-                ", Incompatible collection of: " + otherGenericType);
-        }
+        collectionCheck(collection);
 
         //record size for comparison.
         int preSize = size();
@@ -344,18 +335,35 @@ public class MyArrayList<T> implements List<T> {
         }
         //reassign
         structure = temp;
-
         return preSize != size;
     }
 
     @Override
     public boolean removeAll(Collection collection) {
-        return false;
+        collectionCheck(collection);
+
+        //record list size
+        int preSize = size;
+
+        for(Object item : collection) {
+            if(contains(item)) {
+                remove(item);
+            }
+        }
+
+        return size != preSize; //if list changed
     }
 
     @Override
     public boolean containsAll(Collection collection) {
-        return false;
+        collectionCheck(collection);
+
+        for(Object item : collection) {
+            if(!contains(item)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -370,13 +378,27 @@ public class MyArrayList<T> implements List<T> {
     private T[] getNoNullCopy() {
         T[] array = (T[]) new Object[size];
         int counter = 0;
-        for(int i = 0; i < structure.length; i++) {
-            if(structure[i] != null) {
-                array[counter] = structure[i];
+        for (T t : structure) {
+            if (t != null) {
+                array[counter] = t;
                 counter++;
             }
         }
         return array;
+    }
+
+    private void collectionCheck(Collection<Object> collection) {
+        if(collection == null || collection.contains(null)) {
+            throw new NullPointerException("collection contains a null element or is null");
+        }
+
+        String myGenericType = structure[0].getClass().getTypeName();
+        String otherGenericType = collection.iterator().next().getClass().getTypeName();
+
+        if(!myGenericType.equals(otherGenericType)) {
+            throw new ClassCastException("Incompatible classes. Current type: " + myGenericType +
+                    ", Incompatible collection of: " + otherGenericType);
+        }
     }
 
     @Override

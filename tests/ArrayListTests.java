@@ -2,11 +2,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import structures.array_lists.MyArrayList;
-
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.ColorModel;
 import java.util.*;
 import java.util.List;
 
@@ -486,12 +482,49 @@ public class ArrayListTests {
 
     @Test
     public void testRemoveAll() {
-        fail();
+        addElements();
+
+        Collection<Integer> other = new ArrayList<>();
+        for(int i = 5; i <= 10; i++) {
+            other.add(i);
+        }
+
+        myList.removeAll(other);
+
+        assertFalse(myList.containsAll(other), "list still contains elements from collection even after removal");
     }
 
     @Test
     public void testContainsAll() {
-        fail();
+        addElements();
+
+        Collection<Integer> other = new ArrayList<>();
+
+        for(int i = 5; i <= 10; i++) {
+            other.add(i);
+        }
+
+        assertTrue(myList.containsAll(other), "collection of items returns false even though all elements are in list");
+
+        other.add(9090);
+
+        assertFalse(myList.containsAll(other), "collection has elements not in list but still says it contains them");
+
+        try {
+            myList.containsAll(null);
+            fail("exception not thrown when given a null collection in containsAll()");
+        } catch (NullPointerException exception) {
+            //good
+        }
+
+        try {
+            Collection<Paint> badCollection = new ArrayList<>();
+            badCollection.add(new Color(234,234,234));
+            myList.containsAll(badCollection);
+            fail("exception not thrown when given an incompatible collection");
+        } catch (ClassCastException exception) {
+            //good
+        }
     }
 
     @Test
