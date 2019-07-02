@@ -8,7 +8,7 @@ import java.util.*;
  * @author Chauncey Brown-Castro
  * @version 1.0
  */
-public class MyArrayList<T> implements List<T> {
+public class MyArrayList<T> implements List<T>, Iterable<T> {
 
     private int size;
     private T[] structure;
@@ -49,7 +49,7 @@ public class MyArrayList<T> implements List<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return null;
+        return new MyArrayListIterator<>();
     }
 
     @Override
@@ -288,12 +288,12 @@ public class MyArrayList<T> implements List<T> {
 
     @Override
     public ListIterator<T> listIterator() {
-        return null;
+        return new MyArrayListIterator<>();
     }
 
     @Override
     public ListIterator<T> listIterator(int index) {
-        return null;
+        return new MyArrayListIterator<>(index);
     }
 
     @Override
@@ -407,5 +407,86 @@ public class MyArrayList<T> implements List<T> {
                 "\n size = " + size +
                 "\n structure = " + Arrays.toString(getNoNullCopy()) +
                 "\n}";
+    }
+
+    private class MyArrayListIterator<T> implements ListIterator<T> , Iterator<T>{
+
+        private T[] data;
+        private int index;
+
+        private MyArrayListIterator() {
+            this.data = (T[]) structure;
+        }
+
+        private MyArrayListIterator(int index) {
+            if(index < 0 || index >= size) {
+                throw new IndexOutOfBoundsException("Invalid index");
+            }
+            this.data = (T[]) structure;
+            this.index = index;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return index < size;
+        }
+
+        @Override
+        public T next() {
+            T item = data[index];
+            index++;
+            return item;
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            return index > 0;
+        }
+
+        @Override
+        public T previous() {
+            T item = data[index];
+            index--;
+            return item;
+        }
+
+        @Override
+        public int nextIndex() {
+            if(index >= size) {
+                return size;
+            }
+            return index;
+        }
+
+        @Override
+        public int previousIndex() {
+            if(index <= 0) {
+                return -1;
+            }
+            return index;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("Cannot edit structure while iterating");
+        }
+
+        @Override
+        public void set(T item) {
+            throw new UnsupportedOperationException("Cannot edit structure while iterating");
+        }
+
+        @Override
+        public void add(T item) {
+            throw new UnsupportedOperationException("Cannot edit structure while iterating");
+        }
+
+        @Override
+        public String toString() {
+            return "MyArrayListIterator{" +
+                    "data=" + Arrays.toString(data) +
+                    ", index=" + index +
+                    '}';
+        }
     }
 }

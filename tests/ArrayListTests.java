@@ -71,7 +71,14 @@ public class ArrayListTests {
 
     @Test
     public void testIterator() {
-        fail();
+        addElements();
+
+        //make sure all elements can be iterated through
+        int counter = 1;
+        for(Integer item : myList) {
+            assertEquals(item, counter, "did not get correct item");
+            counter++;
+        }
     }
 
     @Test
@@ -394,12 +401,26 @@ public class ArrayListTests {
 
     @Test
     public void testListIterator() {
-        fail();
+        addElements();
+
+        //make sure all elements can be iterated through
+        int counter = 1;
+        for(Integer item : myList) {
+            assertEquals(item, counter, "did not get correct item");
+            counter++;
+        }
     }
 
     @Test
     public void testListIteratorWithIndex() {
-        fail();
+        addElements();
+
+        //make sure all elements can be iterated through
+        int counter = 1;
+        for(Integer item : myList) {
+            assertEquals(item, counter, "did not get correct item");
+            counter++;
+        }
     }
 
     @Test
