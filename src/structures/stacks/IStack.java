@@ -7,9 +7,7 @@ import java.util.List;
  * This interface provides an interface for a Stack
  * class.
  *
- * DO NOT ALTER THIS FILE!
- *
- * @author Josh Archer
+ * @author Chauncey Brown-Castro
  * @version 1.0
  */
 public interface IStack<T> extends Iterable<T>
@@ -21,7 +19,7 @@ public interface IStack<T> extends Iterable<T>
      *
      * @param element the new elements
      */
-    public void push(T element);
+    void push(T element);
 
     /**
      * Adds several elements to the top of the stack.
@@ -33,7 +31,7 @@ public interface IStack<T> extends Iterable<T>
      *
      * @param elements an array of elements
      */
-    public void pushAll(T[] elements);
+    void pushAll(T[] elements);
 
     /**
      * Removes and returns the top element of the stack.
@@ -42,7 +40,7 @@ public interface IStack<T> extends Iterable<T>
      * stack is empty and pop() is called
      * @return the top element of the stack
      */
-    public T pop();
+    T pop();
 
     /**
      * Removes and returns all elements of the stack as
@@ -56,14 +54,14 @@ public interface IStack<T> extends Iterable<T>
      * stack is empty and popAll() is called
      * @return a list of stack elements
      */
-    public List<T> popAll();
+    List<T> popAll();
 
     /**
      * Returns the number of elements in the stack.
      *
      * @return the number of elements
      */
-    public int size();
+    int size();
 
     /**
      * Reports if the stack is empty.
@@ -71,7 +69,7 @@ public interface IStack<T> extends Iterable<T>
      * @return true if the stack has no elements, otherwise
      * false
      */
-    public boolean isEmpty();
+    boolean isEmpty();
 
     /**
      * Returns an iterator over the elements in the stack.
@@ -79,10 +77,11 @@ public interface IStack<T> extends Iterable<T>
      * making any changes to the stack itself.
      * @return an object using the Iterator<T> interface
      */
-    public Iterator<T> iterator();
+    @Override
+    Iterator<T> iterator();
 
     /**
      * Removes all elements from the stack.
      */
-    public void clear();
+    void clear();
 }
