@@ -1,0 +1,4 @@
+See contains() in structures.trees.BinarySearchTree.java
+See inOrder() in structures.trees.BinarySearchTree.java
+See preOrder() in structures.trees.BinarySearchTree.java
+See postOrder() in structures.trees.BinarySearchTree.java
